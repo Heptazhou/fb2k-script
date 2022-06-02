@@ -9,6 +9,9 @@
 
  * modify by yuer on 2018/03/30
  * version : 0.1.2 b8
+
+ * modify by Heptazhou
+ * https://github.com/Heptazhou/fb2k-script
  */
 
 //更改lrc_order内标识顺序，设置歌词输出顺序，删除即不获取
@@ -48,10 +51,10 @@ function get_my_name() {
 	return "网易云音乐(翻译)"
 }
 function get_version() {
-	return "0.1.2 b8"
+	return "0.1.2 b8~"
 }
 function get_author() {
-	return "cimoc, yuer"
+	return "cimoc, yuer, Heptazhou"
 }
 
 function start_search(info, callback) {
@@ -159,11 +162,14 @@ function start_search(info, callback) {
 					var issetlrc = 0
 					if (!ncm_lrc.lrc) return false
 					if (ncm_lrc.tlyric && ncm_lrc.tlyric.lyric) {
-						tranlrc = ncm_lrc.tlyric.lyric.replace(/(〔|〕|〈|〉|《|》|「|」|『|』|〖|〗|【|】|{|}|\/)/g, "")
+						tranlrc = ncm_lrc.tlyric.lyric.replace(/[〔〕〈〉《》「」『』〖〗【】{}\/]/g, "")
 						issettran = 1
 					} else debug && console("no translation")
-					if (ncm_lrc.lrc.lyric) issetlrc = 1
-					else debug && console("no lyric")
+					if (ncm_lrc.lrc.lyric) {
+						if (/\[99\:00\.00\]纯音乐，请欣赏/.test(ncm_lrc.lrc.lyric)) return false
+						issetlrc = 1
+					} else debug && console("no lyric")
+					if (!issetlrc) return false
 					if (!lrc_order.length) lrc_order = ["new_merge", "newtype", "origin", "tran"]
 					for (var key in lrc_order) {
 						switch (lrc_order[key]) {
